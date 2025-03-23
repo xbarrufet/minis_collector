@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name":"minis_collector",
+			"path": "."
+		},
+		{
+			"name":"minis_collector_be",
+            "path": "./minis_collector_be"
+		},
+		{
+			"name":"parsers",
+            "path": "./parsers"
+		}
+	],
+	"settings": {}
+}
