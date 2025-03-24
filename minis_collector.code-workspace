@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
-			"name":"minis_collector",
+			"name": "minis_collector",
 			"path": "."
 		},
 		{
-			"name":"minis_collector_be",
-            "path": "./minis_collector_be"
+			"name": "mc_api",
+			"path": "./mc_api"
 		},
 		{
-			"name":"parsers",
-            "path": "./parsers"
+			"name": "parsers",
+			"path": "./parsers"
 		}
 	],
 	"settings": {}

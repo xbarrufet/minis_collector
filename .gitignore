@@ -20,3 +20,8 @@ instance/
 .idea/
 .vscode/
 *.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+out/

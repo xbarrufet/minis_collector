@@ -21,6 +21,15 @@ def create_app(settings_module):
     app.register_blueprint(master_data_v1_0_bp)
     # Registra manejadores de errores personalizados
     register_error_handlers(app)
+
+    #crea la base de datos
+    with app.app_context():
+        db.create_all()
+    
+    @app.route("/heart_beat")
+    def heart_beat():
+        return "OK"
+    
     return app
     
 def register_error_handlers(app):
