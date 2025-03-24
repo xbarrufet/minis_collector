@@ -1,1 +1,1 @@
-init
+print('hola')

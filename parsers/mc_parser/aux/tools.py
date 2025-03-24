@@ -1,7 +1,10 @@
 
 
+import json
+import os
 import re
 
+JSON_DATA_FOLDER = "json_data"
 
 digits = re.compile(r'\d+')
 
@@ -26,3 +29,11 @@ def create_db(self):
         script = open('listmaster_db.sql', 'r').read()
         self.cursor.executescript(script)
         self.conn.commit()
+        
+        
+def save_file(data,game_edition_id,faction_id):
+    
+    game_edttion_path = os.path.join(JSON_DATA_FOLDER,game_edition_id)
+    if not os.path.exists(game_edttion_path):
+        os.makedirs(game_edttion_path)
+    json.dump(data, open(os.path.join(game_edttion_path,faction_id+".json"), 'w'), indent=3)

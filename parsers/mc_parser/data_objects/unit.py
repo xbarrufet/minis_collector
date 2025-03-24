@@ -1,6 +1,6 @@
 
 import json
-from aux.data_object_base import DataObjectBase
+from mc_parser.aux.data_object_base import DataObjectBase
 
 
 class UnitDTO(DataObjectBase):
@@ -17,6 +17,9 @@ class UnitDTO(DataObjectBase):
         self.keywords = keywords
         self.profiles = profiles
 
+    def to_dict(self):
+        return self.__dict__
+
 
 
 class UnitProfileDTO(DataObjectBase):
@@ -29,6 +32,9 @@ class UnitProfileDTO(DataObjectBase):
         self.base_cost = base_cost
         self.loadout_configuration = loadout_configuration
         self.loadouts = loadouts
+        
+    def to_dict(self):
+        return self.__dict__
 
 class UnitProfileLoadoutDTO(DataObjectBase):
     def __init__(self, loadout_id:str,is_default:bool, base_cost:int,attributes:dict, abilities:str, loadout_name:str):
@@ -39,4 +45,8 @@ class UnitProfileLoadoutDTO(DataObjectBase):
         self.abilities = abilities
         self.is_default = False
         self.loadout_name = loadout_name
+        
+    def to_dict(self):
+        return self.__dict__
+    
     

@@ -1,6 +1,6 @@
 
 
-from aux.data_object_base import DataObjectBase
+from mc_parser.aux.data_object_base import DataObjectBase
 
 
 class FactionDTO(DataObjectBase):
@@ -17,3 +17,6 @@ class FactionDTO(DataObjectBase):
 
     def __str__(self):
         return super().__str__()
+    
+    def to_dict(self):
+        return self.__dict__

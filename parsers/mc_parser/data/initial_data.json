@@ -1,0 +1,21 @@
+{"initial_load":
+    [{
+        "api_url":"games",
+        "data":[
+            {"game_id":"AoS","game_name":"Warhammer: Age of Sigmar","game_description":"Warhammer: Age of Sigmar"},
+            {"game_id":"40K","game_name":"Warhammer: Warhammer 40.000","game_description":"Warhammer: Warhammer 40.000"},
+            {"game_id":"TOL","game_name":"Warhammer: The Old World","game_description":"Warhammer: The Old World"},
+            {"game_id":"MESBG","game_name":"Middle Earth Strategic Battle Game","game_description":"Middle Earth Strategic Battle Game"}
+        ]
+    },
+    {
+        "api_url":"game_editions",
+        "data":[
+            {"game_edition_id":"AoS_4","game_eition_name":"Age of Sgimar 4th Edition","game_edition_game_id":"AoS"},
+            {"game_edition_id":"40K_10","game_eition_name":"Warhammer 40K 10th Edition","game_edition_game_id":"40K"},
+            {"game_edition_id":"TOW_1","game_eition_name":"The Old World 1st Edition","game_edition_game_id":"TOW"},
+            {"game_edition_id":"MESBG_2024","game_eition_name":"Middle Earth Strategic Battle Game 2024","game_edition_game_id":"MESBG"}
+        ]
+    }
+]
+}

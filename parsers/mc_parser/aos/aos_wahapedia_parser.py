@@ -1,12 +1,11 @@
 import json
 import re
-from bs4 import BeautifulSoup
 import requests
-
-from aux import tools
-from data_objects.faction import FactionDTO
-from aos_4th_wahapedia_unit_factory import build_unit
-from repository.parser_repository import ParserRepository
+from bs4 import BeautifulSoup
+from mc_parser.aux import tools
+from mc_parser.aux.tools import build_id, get_first_digit, build_id
+from mc_parser.aos.aos_4th_wahapedia_unit_factory import build_unit
+from mc_parser.data_objects.faction import FactionDTO
 
 AOS4_WAHAPEDIA_URL = "https://wahapedia.ru"
 
@@ -14,6 +13,36 @@ AOS4_WAHAPEDIA_URL = "https://wahapedia.ru"
 set_img=[]
 battle_profle_groups=["Notes:","Regiment Options:","Can be reinforced:","Base size:","Points:","Unit Size:"]
 weapon_attrs = ["name","range","attacks","to_hit","to_wound","rend","damage"]
+
+
+factions_dict = {"cities_of_sigmar":{"faction_name": "Cities of Sigmar", "faction_url": "/aos4/factions/cities-of-sigmar", "alliance": "Order"}
+,"daughters_of_khaine":{"faction_name": "Daughters of Khaine", "faction_url": "/aos4/factions/daughters-of-khaine", "alliance": "Order"}
+,"fyreslayers":{"faction_name": "Fyreslayers", "faction_url": "/aos4/factions/fyreslayers", "alliance": "Order"}
+,"idoneth_deepkin":{"faction_name": "Idoneth Deepkin", "faction_url": "/aos4/factions/idoneth-deepkin", "alliance": "Order"}
+,"kharadron_overlords":{"faction_name": "Kharadron Overlords", "faction_url": "/aos4/factions/kharadron-overlords", "alliance": "Order"}
+,"lumineth_realm-lords":{"faction_name": "Lumineth Realm-lords", "faction_url": "/aos4/factions/lumineth-realm-lords", "alliance": "Order"}
+,"seraphon":{"faction_name": "Seraphon", "faction_url": "/aos4/factions/seraphon", "alliance": "Order"}
+,"stormcast_eternals":{"faction_name": "Stormcast Eternals", "faction_url": "/aos4/factions/stormcast-eternals", "alliance": "Order"}
+,"sylvaneth":{"faction_name": "Sylvaneth", "faction_url": "/aos4/factions/sylvaneth", "alliance": "Order"}
+,"beasts_of_chaos":{"faction_name": "Beasts of Chaos", "faction_url": "/aos4/factions/beasts-of-chaos", "alliance": "Chaos"}
+,"blades_of_khorne":{"faction_name": "Blades of Khorne", "faction_url": "/aos4/factions/blades-of-khorne", "alliance": "Chaos"}
+,"disciples_of_tzeentch":{"faction_name": "Disciples of Tzeentch", "faction_url": "/aos4/factions/disciples-of-tzeentch", "alliance": "Chaos"}
+,"hedonites_of_slaanesh":{"faction_name": "Hedonites of Slaanesh", "faction_url": "/aos4/factions/hedonites-of-slaanesh", "alliance": "Chaos"}
+,"maggotkin_of_nurgle":{"faction_name": "Maggotkin of Nurgle", "faction_url": "/aos4/factions/maggotkin-of-nurgle", "alliance": "Chaos"}
+,"skaven":{"faction_name": "Skaven", "faction_url": "/aos4/factions/skaven", "alliance": "Chaos"}
+,"slaves_to_darkness":{"faction_name": "Slaves to Darkness", "faction_url": "/aos4/factions/slaves-to-darkness", "alliance": "Chaos"}
+,"flesh-eater_courts":{"faction_name": "Flesh-eater Courts", "faction_url": "/aos4/factions/flesh-eater-courts", "alliance": "Death"}
+,"nighthaunt":{"faction_name": "Nighthaunt", "faction_url": "/aos4/factions/nighthaunt", "alliance": "Death"}
+,"ossiarch_bonereapers":{"faction_name": "Ossiarch Bonereapers", "faction_url": "/aos4/factions/ossiarch-bonereapers", "alliance": "Death"}
+,"soulblight_gravelords":{"faction_name": "Soulblight Gravelords", "faction_url": "/aos4/factions/soulblight-gravelords", "alliance": "Death"}
+,"bonesplitterz":{"faction_name": "Bonesplitterz", "faction_url": "/aos4/factions/bonesplitterz", "alliance": "Destruction"}
+,"gloomspite_gitz":{"faction_name": "Gloomspite Gitz", "faction_url": "/aos4/factions/gloomspite-gitz", "alliance": "Destruction"}
+,"ironjawz":{"faction_name": "Ironjawz", "faction_url": "/aos4/factions/ironjawz", "alliance": "Destruction"}
+,"kruleboyz":{"faction_name": "Kruleboyz", "faction_url": "/aos4/factions/kruleboyz", "alliance": "Destruction"}
+,"ogor_mawtribes":{"faction_name": "Ogor Mawtribes", "faction_url": "/aos4/factions/ogor-mawtribes", "alliance": "Destruction"}
+,"sons_of_behemat":{"faction_name": "Sons of Behemat", "faction_url": "/aos4/factions/sons-of-behemat", "alliance": "Destruction"}
+,"endless_spells":{"faction_name": "Endless Spells", "faction_url": "/aos4/factions/endless-spells", "alliance": "Other"}}
+
 
 
 class FactionInfo(object):
@@ -31,6 +60,7 @@ class AOSWahapediaParser(object):
         pass
     
     
+    
     def parse_all_factions_info(self):
         res = []
         url =AOS4_WAHAPEDIA_URL + "/aos4/the-rules/quick-start-guide/"
@@ -43,7 +73,7 @@ class AOSWahapediaParser(object):
                 res.append(FactionInfo(faction_data.text.strip(), faction_data['href'], alliance_name))
         return res
     
-    def parse_faction(self,faction_url,edition_id, alliance)->FactionDTO:
+    def _parse_faction_data(self,faction_url,edition_id, alliance)->FactionDTO:
         url = AOS4_WAHAPEDIA_URL + faction_url
         page = requests.get(url)
         data = BeautifulSoup(page.content.decode('utf-8', 'ignore'), "html.parser")
@@ -59,11 +89,13 @@ class AOSWahapediaParser(object):
             ability = self.__parse_rule_text(rule_text.text.strip())
             ability["when"]=t.text.strip()
             rules[rule_family.text.strip()].append(ability)
-        return FactionDTO(faction_id=tools.build_id(faction_name)+"_"+edition_id,
-                       edition_id=edition_id, 
-                       faction_name=faction_name, 
-                       alliance="", 
-                       rules=json.dumps(rules))
+        res = {}
+        res["faction_id"] = tools.build_id(faction_name)+"_"+edition_id
+        res["edition_id"] = edition_id
+        res["faction_name"] = faction_name
+        res["alliance"] = alliance
+        res["rules"] = rules
+        return res
         
     def __parse_rule_text(self, rule_text):
         rule={}
@@ -113,7 +145,19 @@ class AOSWahapediaParser(object):
         weapons=self.__parse_weapons(warscroll)
         abilities = self.__parse_warscroll_abilities(warscroll)
         keywords = self.__parse_keywords(warscroll)
-        return (unit_name,description,attributes,unit_size,points,base_size,reinforced,regiment_options,notes,weapons,abilities,keywords)
+        return build_unit(unit_name=unit_name,
+                          unit_description=description, 
+                          faction=faction,
+                          attributes=attributes,
+                          cost=points, 
+                          size=unit_size, 
+                          reinforced=reinforced,
+                          weapons=weapons,
+                          abilities=abilities,
+                          keywords=keywords,
+                          regiment_options=regiment_options,
+                          notes=notes)
+        #return (unit_name,description,attributes,unit_size,points,base_size,reinforced,regiment_options,notes,weapons,abilities,keywords)
     
     def __parse_legend(self, warscroll):
         attributes = {}
@@ -204,20 +248,16 @@ class AOSWahapediaParser(object):
     def build_unit(self, unit_name,description,attributes,unit_size,points,base_size,reinforced,regiment_options,notes,weapons,abilities,keywords):
         pass
     
+    
+    def generate_faction_file(self,faction_id, edition_id):
+        faction_url = factions_dict[faction_id]["faction_url"]
+        faction_data = self._parse_faction_data(faction_url, edition_id, factions_dict[faction_id]["alliance"])
+        faction_data["warscrolls"]=self.parse_all_warscrolls(faction_url, faction_data)
+        tools.save_file(faction_data, edition_id, faction_id)
+        
+    
+    
 if __name__=="__main__":
-    db = ParserRepository()
-    db.create_db()
-    db.commit()
     parser = AOSWahapediaParser()
-    faction = parser.parse_faction("/aos4/factions/ironjawz/","AOS_4","Destruction")
-    db.persist_faction(faction)
-    #unit = parser.parse_single_warscroll_url("/aos4/factions/ironjawz/Kragnos-the-End-of-Empires",faction) 
-    units = parser.parse_all_warscrolls("/aos4/factions/ironjawz/",faction)
-    for unit in units:
-        u=build_unit(unit_name=unit[0],unit_description=unit[1], faction=faction,keywords_line=unit[11],cost=unit[4], size=unit[3], reinforced=unit[6], rules=unit[5], attributes=unit[2], weapons=unit[9],abilities=unit[10],keywords=unit[11])
-        db.persist_unit(u)
-    db.commit()
-    # res = parser.parse_all_factions_info()
-    # for faction in res:
-    #     parser.parse_faction(faction.faction_url)
-    # print(set(set_img))
+    parser.generate_faction_file("ironjawz", "AoS_4")
+        

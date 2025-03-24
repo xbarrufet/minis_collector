@@ -3,8 +3,8 @@
 import json
 import re
 
-from aux import tools
-from data_objects.unit import UnitDTO, UnitProfileDTO, UnitProfileLoadoutDTO
+from mc_parser.aux import tools
+from mc_parser.data_objects.unit import UnitDTO, UnitProfileDTO, UnitProfileLoadoutDTO
 
 pattern = re.compile(r'\((\d+)(?:/(\d+))?\)')
 
@@ -31,15 +31,17 @@ def _build_unit_profile_loadout( profile_id, is_profile_default, weapons):
                     attributes["attacks"] = str(int(attributes["attacks"])+1)
                 else:
                     attributes["attacks"] = attributes["attacks"] + "+1"
-        res.append(UnitProfileLoadoutDTO(loadout_id=loadout_id,
-                                      loadout_name=loadout_name,
-                                      base_cost=0,
-                                      abilities=loadout_abilities,
-                                      is_default=True,
-                                      attributes=attributes))
+            profile_loadout={}
+            profile_loadout["loadout_id"]=loadout_id
+            profile_loadout["loadout_name"]=loadout_name
+            profile_loadout["base_cost"]=0
+            profile_loadout["abilities"]=loadout_abilities
+            profile_loadout["is_default"]=True
+            profile_loadout["attributes"]=attributes        
+        res.append(profile_loadout)
     return res
 
-def __build_unit_profle(unit_name,composition, rules, attributes, weapons):
+def __build_unit_profle(unit_name,composition, attributes, weapons):
     res=[]
     for p in composition:
         profile_id= p["profile"]
@@ -47,35 +49,50 @@ def __build_unit_profle(unit_name,composition, rules, attributes, weapons):
         is_default = p["default"]
         unit_attributes=attributes if not is_default else ""
         loadouts = _build_unit_profile_loadout(profile_id, is_default, weapons)
-        res.append(UnitProfileDTO(profile_id=profile_id,
-                               profile_name=profile_name,
-                               is_default=is_default,
-                               base_cost=0,
-                               loadout_configuration="",
-                               attributes=unit_attributes,
-                               loadouts=loadouts))
+        unit_profile={}
+        unit_profile["profile_id"]=profile_id
+        unit_profile["profile_name"]=profile_name
+        unit_profile["is_default"]=is_default
+        unit_profile["base_cost"]=0
+        unit_profile["loadout_configuration"]=""
+        unit_profile["attributes"]=unit_attributes
+        unit_profile["loadouts"]=loadouts
+        res.append(unit_profile)
     return res
             
 
-def build_unit(unit_name,unit_description, faction,keywords_line,cost, size, reinforced,rules,attributes, weapons,abilities,keywords):
+def build_unit(unit_name,unit_description, faction,cost, size, reinforced,attributes, weapons,abilities,keywords,regiment_options,notes):
     if unit_name.lower().startswith("kragnos"):
         a=3
     unit_id =tools.build_id(unit_name)
-    faction_id = faction.faction_id
-    composition = __get_composition_from_keywords(unit_id, keywords_line[0])
+    composition = __get_composition_from_keywords(unit_id, keywords[0])
     sizes = __get_size(size, reinforced)
     costs= __get_costs(cost,reinforced)
-    profiles = __build_unit_profle(unit_name,composition, rules, attributes, weapons)
-    return UnitDTO(unit_id=unit_id,
-                unit_name=unit_name,
-                unit_description=unit_description,
-                faction_id=faction_id,
-                abilities=abilities,
-                composition=composition,
-                allowed_sizes=json.dumps(sizes),
-                costs=json.dumps(costs),
-                keywords=keywords,
-                profiles=profiles)
+    profiles = __build_unit_profle(unit_name,composition, attributes, weapons)
+    res = {}
+    res["unit_id"]=unit_id
+    res["unit_name"]=unit_name
+    res["unit_description"]=unit_description
+    res["faction_id"]=faction["faction_id"]
+    res["abilities"]=abilities
+    res["composition"]=composition
+    res["allowed_sizes"]=json.dumps(sizes)
+    res["costs"]=json.dumps(costs)
+    res["keywords"]=keywords
+    res["profiles"]=profiles
+    res["regiment_options"]=regiment_options
+    res["notes"]=notes
+    return res
+    # return UnitDTO(unit_id=unit_id,
+    #             unit_name=unit_name,
+    #             unit_description=unit_description,
+    #             faction_id=faction_id,
+    #             abilities=abilities,
+    #             composition=composition,
+    #             allowed_sizes=json.dumps(sizes),
+    #             costs=json.dumps(costs),
+    #             keywords=keywords,
+    #             profiles=profiles)
     
     
     
