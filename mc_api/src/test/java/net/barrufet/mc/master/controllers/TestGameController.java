@@ -37,7 +37,7 @@ public class TestGameController {
 
 
     public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15.3")
-            .withDatabaseName("testdb")
+            .withDatabaseName("test_db")
             .withUsername("user")
             .withPassword("password")
             .withReuse(true);
@@ -99,7 +99,7 @@ public class TestGameController {
 
     @Test
     public void test_given_GET_game_when_nonexisting_id_then_exception() throws Exception {
-        UUID nonExistingId = UUID.randomUUID();
+        long nonExistingId = 999999L;
         given()
                 .contentType(ContentType.JSON).when()
                 .get("/master/api/v1/games/" + nonExistingId)
@@ -122,21 +122,21 @@ public class TestGameController {
 
     }
 
-
-    @Test
-    public void test_when_post_valid_game_then_game_is_persisted_and_returned() throws Exception {
-        Game game = new Game().withName("game 3").withDescription("game 3 description");
-        given()
-                .contentType(ContentType.JSON)
-                .body(game)
-                .when()
-                .post("/master/api/v1/games")
-                .then()
-                .statusCode(200)
-                .body("$",hasKey("id"))
-                .body("name", is(game.getName()))
-                .body("description", is(game.getDescription()));
-    }
+//
+//    @Test
+//    public void test_when_post_valid_game_then_game_is_persisted_and_returned() throws Exception {
+//        Game game = new Game().withName("game 3").withDescription("game 3 description");
+//        given()
+//                .contentType(ContentType.JSON)
+//                .body(game)
+//                .when()
+//                .post("/master/api/v1/games")
+//                .then()
+//                .statusCode(200)
+//                .body("$",hasKey("id"))
+//                .body("name", is(game.getName()))
+//                .body("description", is(game.getDescription()));
+//    }
 
 
 }

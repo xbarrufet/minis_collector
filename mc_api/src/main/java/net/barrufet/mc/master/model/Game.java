@@ -16,11 +16,16 @@ import java.util.UUID;
 @Entity(name="game")
 @Table(name="mic_games")
 public class Game {
-
     @Id
-    @GeneratedValue
-    @Column(name = "gam_id")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "game_seq")
+    @SequenceGenerator(
+            name = "game_seq",
+            sequenceName = "game_id_seq",
+            allocationSize = 100 // Cache size for sequence values
+    )
+    @Column(name = "gam_id",columnDefinition = "BIGINT")
+    private Long id;
+
     @Column(name="gam_name")
     private  String name;
     @Column(name="gam_description")

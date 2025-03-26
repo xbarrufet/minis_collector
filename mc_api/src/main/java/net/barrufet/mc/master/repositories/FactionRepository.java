@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 
-public interface FactionRepository  extends JpaRepository<Faction, UUID> {
+public interface FactionRepository  extends JpaRepository<Faction, Long> {
 
-    List<Faction> findByGameEditionId(UUID gameEditionId);
+    List<Faction> findByGameEditionId(Long gameEditionId);
 }

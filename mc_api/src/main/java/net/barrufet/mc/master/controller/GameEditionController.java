@@ -34,8 +34,8 @@ public class GameEditionController {
 
     //***********  GANE EDITIONS SECTION
     @GetMapping("/api/v1/games/{id}/gameEditions")
-    public List<GameEditionDTO> getGameEditionsByGameId(@PathVariable String id) throws GameEditionNotFoundException {
-        List<GameEdition> gameEditions =gameEditionService.getAllGameEditionsByGameId(UUID.fromString( id));
+    public List<GameEditionDTO> getGameEditionsByGameId(@PathVariable Long id) throws GameEditionNotFoundException {
+        List<GameEdition> gameEditions =gameEditionService.getAllGameEditionsByGameId(id);
         return gameEditions.stream()
                 .map(this::convertGameEditionToDTO)
                 .collect(Collectors.toList());
@@ -49,29 +49,11 @@ public class GameEditionController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/api/v1/games/{gameId}/gameEditions")
-    public GameEditionDTO createGameEditionInGame(@PathVariable UUID gameId, @RequestBody GameEditionDTO gameEditionDTO) throws GameNotFoundException {
-        GameEdition gameEdition = convertGameEditionDTOToEntity(gameEditionDTO);
-        GameEdition newGameEdition = this.gameEditionService.persisGameEditionOnGame(gameId,gameEdition);
-        return convertGameEditionToDTO(newGameEdition);
-    }
-
-
-    @PutMapping("/api/v1/games/gameEditions/{id}")
-    public GameEditionDTO updateGameEdition(@RequestBody GameEditionDTO gameEditionDTO, @PathVariable UUID id) throws GameEditionNotFoundException {
-        GameEdition gameEdition = convertGameEditionDTOToEntity(gameEditionDTO);
-        gameEdition.setId(id);
-        GameEdition updatedGameEdition = this.gameEditionService.persistGameEdition(gameEdition);
-        return convertGameEditionToDTO(updatedGameEdition);
-    }
 
     private GameEditionDTO convertGameEditionToDTO(GameEdition gameEdition) {
         return modelMapper.map(gameEdition, GameEditionDTO.class);
     }
 
-    private GameEdition convertGameEditionDTOToEntity(GameEditionDTO gameEditionDTO) {
-        return modelMapper.map(gameEditionDTO, GameEdition.class);
-    }
 }
 
 

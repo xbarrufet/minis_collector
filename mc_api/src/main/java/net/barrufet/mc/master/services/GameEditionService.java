@@ -11,9 +11,8 @@ import java.util.UUID;
 public interface GameEditionService {
 
 
-    GameEdition getGameEditionById(UUID id) throws GameEditionNotFoundException;
+    GameEdition getGameEditionById(Long id) throws GameEditionNotFoundException;
     List<GameEdition> getAllGameEditions();
-    List<GameEdition> getAllGameEditionsByGameId(UUID gameId) throws GameNotFoundException;
-    GameEdition persisGameEditionOnGame(UUID gameId, GameEdition gameEdition) throws GameNotFoundException;
-    GameEdition persistGameEdition(GameEdition gameEdition) throws GameNotFoundException;
+    List<GameEdition> getAllGameEditionsByGameId(Long gameId) throws GameNotFoundException;
+
 }

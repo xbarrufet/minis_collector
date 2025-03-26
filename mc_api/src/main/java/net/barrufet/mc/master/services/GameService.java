@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface GameService {
-    Game getGameById(UUID id) throws GameNotFoundException;
+    Game getGameById(Long id) throws GameNotFoundException;
     List<Game> getAllGames();
-    Game persistGame(Game game);
 
 }

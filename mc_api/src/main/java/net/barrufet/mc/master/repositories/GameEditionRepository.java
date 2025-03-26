@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.UUID;
 
-public interface GameEditionRepository extends JpaRepository<GameEdition, UUID> {
-    List<GameEdition> findByGameId(UUID gameId);
+public interface GameEditionRepository extends JpaRepository<GameEdition, Long> {
+    List<GameEdition> findByGameId(Long gameId);
 }

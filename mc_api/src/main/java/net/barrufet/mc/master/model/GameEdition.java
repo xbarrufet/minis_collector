@@ -22,9 +22,14 @@ import java.util.UUID;
 public class GameEdition implements McEntity {
 
     @Id
-    @GeneratedValue
-    @Column(name = "ged_id")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "gameEdition_seq")
+    @SequenceGenerator(
+            name = "gameEdition_seq",
+            sequenceName = "gameEdition_id_seq",
+            allocationSize = 100 // Cache size for sequence values
+    )
+    @Column(name = "ged_id",columnDefinition = "BIGINT")
+    private int id;
 
     @Column(name="ged_name", nullable = false)
     private  String name;

@@ -38,25 +38,11 @@ public class GameController {
                 .collect(Collectors.toList());
     }
 
-    @PostMapping("/api/v1/games")
-    GameDTO newGame(@RequestBody Game newGame) {
-        Game game = gameService.persistGame(newGame);
-        return convertGameToDto(game);
-    }
-
     @GetMapping("/api/v1/games/{id}")
-    GameDTO getGameById(@PathVariable UUID id) throws GameNotFoundException {
+    GameDTO getGameById(@PathVariable Long id) throws GameNotFoundException {
         Game game = gameService.getGameById(id);
         return convertGameToDto(game);
     }
-
-    @PutMapping("/api/v1/games/{id}")
-    GameDTO replaceGame(@RequestBody Game game, @PathVariable UUID id) {
-        Game toBeUpdatedGame = game.withId(id);
-        Game returnGame = gameService.persistGame(toBeUpdatedGame);
-        return convertGameToDto(returnGame);
-    }
-
 
     private GameDTO convertGameToDto(Game game) {
         if(game.getGameEditions()!=null)

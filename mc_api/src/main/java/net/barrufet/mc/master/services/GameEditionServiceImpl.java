@@ -17,19 +17,17 @@ public class GameEditionServiceImpl implements GameEditionService {
 
 
     private final GameEditionRepository gameEditionRepository;
-    private final GameRepository gameRepository;
 
 
-    public GameEditionServiceImpl( GameEditionRepository gameEditionRepository, GameRepository gameRepository) {
+    public GameEditionServiceImpl( GameEditionRepository gameEditionRepository) {
         this.gameEditionRepository = gameEditionRepository;
-        this.gameRepository = gameRepository;
     }
 
 
     @Override
-    public GameEdition getGameEditionById(UUID id) throws GameEditionNotFoundException {
+    public GameEdition getGameEditionById(Long id) throws GameEditionNotFoundException {
         return this.gameEditionRepository.findById(id).orElseThrow(
-                () -> new GameEditionNotFoundException(id.toString()));
+                () -> new GameEditionNotFoundException(String.valueOf(id)));
     }
 
     @Override
@@ -38,36 +36,10 @@ public class GameEditionServiceImpl implements GameEditionService {
     }
 
     @Override
-    public List<GameEdition> getAllGameEditionsByGameId(UUID gameId) throws GameNotFoundException {
+    public List<GameEdition> getAllGameEditionsByGameId(Long gameId) throws GameNotFoundException {
         return this.gameEditionRepository.findByGameId(gameId);
         
     }
-
-    @Override
-    public GameEdition persisGameEditionOnGame(UUID gameId, GameEdition gameEdition) throws GameNotFoundException {
-        Game game = gameRepository.findById(gameId).orElseThrow( () -> new GameNotFoundException(gameId.toString()));
-        gameEdition.setGame(game);
-        return gameEditionRepository.save(gameEdition);
-    }
-
-    @Override
-    public GameEdition persistGameEdition(GameEdition gameEdition) throws GameNotFoundException, GameEditionNotFoundException {
-        try {
-            if(gameEdition.getId()!=null && !gameEditionRepository.existsById(gameEdition.getId())){
-                throw new GameEditionNotFoundException(gameEdition.getId().toString());
-            }
-            if(gameEdition.getGame()==null){
-                throw new GameNotFoundException("null");
-            }
-            if(!gameRepository.existsById(gameEdition.getGame().getId())) {
-                throw new GameNotFoundException(gameEdition.getGame().getId().toString());
-            }
-            return this.gameEditionRepository.save(gameEdition);
-        } catch (JpaObjectRetrievalFailureException e) {
-            throw new GameNotFoundException(gameEdition.getGame().getId().toString());
-        }
-    }
-
 
 
 }

@@ -17,9 +17,14 @@ import java.util.UUID;
 public class Faction {
 
     @Id
-    @GeneratedValue
-    @Column(name = "fac_id")
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "faction_seq")
+    @SequenceGenerator(
+            name = "faction_seq",
+            sequenceName = "faction_id_seq",
+            allocationSize = 100 // Cache size for sequence values
+    )
+    @Column(name = "fac_id",columnDefinition = "BIGINT")
+    private Long id;
     @Column(name="fac_name")
     private String name;
     @Column(name="fac_alliance")

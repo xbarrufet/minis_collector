@@ -51,7 +51,9 @@ class FactionInfo(object):
         self.faction_url = faction_url
         self.alliance = alliance
 
-
+    
+    def __repr__(self):
+        json.dumps(self.__dict__)
 
 
 class AOSWahapediaParser(object):
@@ -70,7 +72,7 @@ class AOSWahapediaParser(object):
         for alliance in alliances:
             alliance_name = alliance.text.strip()
             for faction_data in alliance.parent.find_all("a"):
-                res.append(FactionInfo(faction_data.text.strip(), faction_data['href'], alliance_name))
+                res.append(FactionInfo(faction_data.text.strip(), faction_data['href'], alliance_name).__dict__)
         return res
     
     def _parse_faction_data(self,faction_url,edition_id, alliance)->FactionDTO:
@@ -259,5 +261,7 @@ class AOSWahapediaParser(object):
     
 if __name__=="__main__":
     parser = AOSWahapediaParser()
-    parser.generate_faction_file("ironjawz", "AoS_4")
+    res = parser.parse_all_factions_info()
+    print(json.dumps(res, indent=3))
+    #parser.generate_faction_file("ironjawz", "AoS_4")
         

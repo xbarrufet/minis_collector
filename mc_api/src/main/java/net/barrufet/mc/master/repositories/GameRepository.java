@@ -4,9 +4,9 @@ import net.barrufet.mc.master.model.GameEdition;
 import org.springframework.data.jpa.repository.JpaRepository;
 import net.barrufet.mc.master.model.Game;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
-public interface GameRepository extends JpaRepository<Game, UUID> {
+public interface GameRepository extends JpaRepository<Game, Long> {
 
+    Optional<Game> findByNameIgnoreCase(String name);
 }

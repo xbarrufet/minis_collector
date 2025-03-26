@@ -27,15 +27,22 @@ public class FactionController {
 
 
     @GetMapping("/api/v1/game/gameEdition/{gameEditionId}/factions")
-    public List<FactionHeaderDTO> getFactionsByGameEditionId(@PathVariable UUID gameEditionId) {
+    public List<FactionHeaderDTO> getFactionsByGameEditionId(@PathVariable Long gameEditionId) {
         List<Faction> factions = factionService.getAllFactionsByGameEditionId(gameEditionId);
         return factions.stream()
                 .map(this::convertFactionToFactionHeaderDTO)
                 .collect(java.util.stream.Collectors.toList());
     }
 
+    @GetMapping("/api/v1/game/gameEdition/factions/{factionId}")
+    public FactionDTO getFactionByd(@PathVariable Long factionId) {
+        Faction faction = factionService.getFactionById(factionId);
+        return this.convertFactionToFactionDTO(faction);
+    }
+
+
     @PostMapping("/api/v1/game/gameEdition/{gameEditionId}/factions")
-    public FactionHeaderDTO createFactionsByGameEditionId(@PathVariable UUID gameEditionId,@RequestBody FactionDTO factionDTO) {
+    public FactionHeaderDTO createFactionsByGameEditionId(@PathVariable Long gameEditionId,@RequestBody FactionDTO factionDTO) {
         Faction faction = convertFactionDTOToFaction(factionDTO);
         Faction newFaction = factionService.persistFactionOnGameEdition(faction,gameEditionId);
         return convertFactionToFactionHeaderDTO(newFaction);
@@ -45,6 +52,10 @@ public class FactionController {
 
     private FactionHeaderDTO convertFactionToFactionHeaderDTO(Faction faction) {
         return modelMapper.map(faction, FactionHeaderDTO.class);
+    }
+
+    private FactionDTO convertFactionToFactionDTO(Faction faction) {
+        return modelMapper.map(faction, FactionDTO.class);
     }
 
     private Faction convertFactionDTOToFaction(FactionDTO factionDTO) {

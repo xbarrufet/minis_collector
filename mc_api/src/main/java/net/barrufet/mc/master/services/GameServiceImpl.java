@@ -21,9 +21,9 @@ public class GameServiceImpl implements GameService {
 
 
     @Override
-    public Game getGameById(UUID id) throws GameNotFoundException{
+    public Game getGameById(Long id) throws GameNotFoundException{
         return this.gameRepository.findById(id).orElseThrow(
-                () -> new GameNotFoundException(id.toString()));
+                () -> new GameNotFoundException(String.valueOf(id)));
     }
 
     @Override
@@ -31,11 +31,7 @@ public class GameServiceImpl implements GameService {
         return gameRepository.findAll();
     }
 
-    @Override
-    public Game persistGame(Game game) {
-        return this.gameRepository.save(game);
-    }
 
 
-    }
+}
 

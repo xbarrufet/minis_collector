@@ -14,8 +14,8 @@ import java.util.UUID;
 @Service
 public class FactionServiceImpl implements FactionService{
 
-    private FactionRepository factionRepository;
-    private GameEditionRepository gameEditionRepository;
+    private final FactionRepository factionRepository;
+    private final GameEditionRepository gameEditionRepository;
 
     public FactionServiceImpl(FactionRepository factionRepository, GameEditionRepository gameEditionRepository) {
         this.factionRepository = factionRepository;
@@ -23,18 +23,18 @@ public class FactionServiceImpl implements FactionService{
     }
 
     @Override
-    public List<Faction> getAllFactionsByGameEditionId(UUID gameEditionId) throws GameEditionNotFoundException {
+    public List<Faction> getAllFactionsByGameEditionId(Long gameEditionId) throws GameEditionNotFoundException {
         return this.factionRepository.findByGameEditionId(gameEditionId);
     }
 
     @Override
-    public Faction getFactionById(UUID factionId) throws FactionNotFoundException{
-       return this.factionRepository.findById(factionId).orElseThrow( () -> new FactionNotFoundException(factionId.toString()));
+    public Faction getFactionById(Long factionId) throws FactionNotFoundException{
+       return this.factionRepository.findById(factionId).orElseThrow( () -> new FactionNotFoundException(String.valueOf(factionId)));
     }
 
     @Override
-    public Faction persistFactionOnGameEdition(Faction faction, UUID gameEditionId) throws GameEditionNotFoundException{
-        GameEdition gameEdition = gameEditionRepository.findById(gameEditionId).orElseThrow( () -> new GameEditionNotFoundException(gameEditionId.toString()));
+    public Faction persistFactionOnGameEdition(Faction faction, Long gameEditionId) throws GameEditionNotFoundException{
+        GameEdition gameEdition = gameEditionRepository.findById(gameEditionId).orElseThrow( () -> new GameEditionNotFoundException(String.valueOf(gameEditionId)));
         faction.setGameEdition(gameEdition);
         return factionRepository.save(faction);
     }
